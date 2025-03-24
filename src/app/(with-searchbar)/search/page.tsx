@@ -1,13 +1,18 @@
-interface PageProps {
-  searchParams: Promise<{ q: string }>;
+import books from "@/mock/books.json";
+import BookItem from "@/components/book-item";
+
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    q?: string;
+  }>;
+}) {
+  return (
+    <div>
+      {books.map((book) => (
+        <BookItem key={book.id} {...book} />
+      ))}
+    </div>
+  );
 }
-
-const Page = async ({ searchParams }: PageProps) => {
-  console.log(searchParams);
-
-  const { q } = await searchParams;
-
-  return <div>서치Page {q}</div>;
-};
-
-export default Page;
