@@ -1,4 +1,4 @@
-import Searchbar from "@/app/(with-searchbar)/searchbar";
+import Searchbar from "@/components/ui/searchbar";
 import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
