@@ -1,5 +1,12 @@
 import { BookData } from "@/types";
 import style from "./page.module.css";
+import { notFound } from "next/navigation";
+
+export const dynamicParams = true; // 동적 라우팅을 사용할 경우 true로 설정
+
+export const generateStaticParams = async () => {
+  return [{ id: "1" }, { id: "2" }, { id: "3" }];
+};
 
 export default async function Page({
   params,
@@ -11,6 +18,9 @@ export default async function Page({
   );
 
   if (!res.ok) {
+    if (res.status === 404) {
+      notFound();
+    }
     return <div>오류가 발생했습니다.</div>;
   }
 
@@ -19,13 +29,15 @@ export default async function Page({
   const { id, title, subTitle, description, author, publisher, coverImgUrl } =
     book;
 
+  console.log(id);
+
   return (
     <div className={style.container}>
       <div
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
       >
-        <img src={coverImgUrl} />
+        {/* <img src={coverImgUrl} /> */}
       </div>
       <div className={style.title}>{title}</div>
       <div className={style.subTitle}>{subTitle}</div>

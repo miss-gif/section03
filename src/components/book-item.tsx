@@ -11,9 +11,11 @@ export default function BookItem({
   publisher,
   coverImgUrl,
 }: BookData) {
+  console.log(description, coverImgUrl);
+
   return (
     <Link href={`/book/${id}`} className={style.container}>
-      <img src={coverImgUrl} />
+      {/* <img src={coverImgUrl} /> */}
       <div>
         <div className={style.title}>{title}</div>
         <div className={style.subTitle}>{subTitle}</div>
