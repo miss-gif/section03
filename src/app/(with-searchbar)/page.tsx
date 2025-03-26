@@ -1,8 +1,11 @@
 import BookItem from "@/components/book-item";
 import { BookData } from "@/types";
 import style from "./page.module.css";
+import { delay } from "@/util/delay";
+import { Suspense } from "react";
 
 const AllBooks = async () => {
+  await delay(1500);
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`, {
     cache: "force-cache",
   });
@@ -21,6 +24,7 @@ const AllBooks = async () => {
 };
 
 const RecoBooks = async () => {
+  await delay(2000);
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`,
     {
@@ -43,16 +47,22 @@ const RecoBooks = async () => {
   );
 };
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <div className={style.container}>
       <section>
         <h3>지금 추천하는 도서</h3>
-        <RecoBooks />
+        <Suspense fallback={<div>로딩 중...</div>}>
+          <RecoBooks />
+        </Suspense>
       </section>
       <section>
         <h3>등록된 모든 도서</h3>
-        <AllBooks />
+        <Suspense fallback={<div>로딩 중...</div>}>
+          <AllBooks />
+        </Suspense>
       </section>
     </div>
   );
