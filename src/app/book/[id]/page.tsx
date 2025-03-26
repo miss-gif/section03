@@ -1,6 +1,7 @@
 import { BookData } from "@/types";
 import style from "./page.module.css";
 import { notFound } from "next/navigation";
+import createReviewAction from "@/actions/create-review-action";
 
 export const dynamicParams = true; // 동적 라우팅을 사용할 경우 true로 설정
 
@@ -45,21 +46,12 @@ const BookDetail = async ({ bookId }: { bookId: string }) => {
   );
 };
 
-const ReviewEditor = () => {
-  const createReviewAction = async (formData: FormData) => {
-    "use server";
-    console.log(formData);
-
-    const content = formData.get("content")?.toString();
-    const author = formData.get("author")?.toString();
-
-    console.log(content, author);
-  };
-
+const ReviewEditor = ({ bookId }: { bookId: string }) => {
   return (
     <form action={createReviewAction}>
-      <input type="text" name="content" placeholder="리뷰 내용" />
-      <input type="text" name="author" placeholder="작성자" />
+      <input name="bookId" value={bookId} hidden readOnly />
+      <input required name="content" placeholder="리뷰 내용" />
+      <input required name="author" placeholder="작성자" />
       <button type="submit">작성하기</button>
     </form>
   );
@@ -69,7 +61,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <div className="space-y-10">
       <BookDetail bookId={(await Promise.resolve(params)).id} />
-      <ReviewEditor />
+      <ReviewEditor bookId={params.id} />
     </div>
   );
 }
