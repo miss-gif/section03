@@ -1,7 +1,8 @@
-import { BookData } from "@/types";
-import style from "./page.module.css";
+import ReviewEditor from "@/components/review-editor";
+import ReviewItem from "@/components/review-item";
+import { BookData, ReviewData } from "@/types";
 import { notFound } from "next/navigation";
-import createReviewAction from "@/actions/create-review-action";
+import style from "./page.module.css";
 
 export const dynamicParams = true; // 동적 라우팅을 사용할 경우 true로 설정
 
@@ -11,7 +12,12 @@ export const generateStaticParams = async () => {
 
 const BookDetail = async ({ bookId }: { bookId: string }) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`,
+    {
+      next: {
+        tags: [`review-${bookId}`],
+      },
+    }
   );
 
   if (!res.ok) {
@@ -46,14 +52,27 @@ const BookDetail = async ({ bookId }: { bookId: string }) => {
   );
 };
 
-const ReviewEditor = ({ bookId }: { bookId: string }) => {
+const ReviewList = async ({ bookId }: { bookId: string }) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`
+  );
+
+  if (!res.ok) {
+    throw new Error(
+      `리뷰 목록을 불러오는 중 오류가 발생했습니다. ${res.statusText}`
+    );
+  }
+
+  const reviews: ReviewData[] = await res.json();
+
+  console.log(reviews);
+
   return (
-    <form action={createReviewAction}>
-      <input name="bookId" value={bookId} hidden readOnly />
-      <input required name="content" placeholder="리뷰 내용" />
-      <input required name="author" placeholder="작성자" />
-      <button type="submit">작성하기</button>
-    </form>
+    <div className="space-y-4">
+      {reviews.map((review) => (
+        <ReviewItem key={`review-itme-${review.id}`} {...review} />
+      ))}
+    </div>
   );
 };
 
@@ -62,6 +81,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     <div className="space-y-10">
       <BookDetail bookId={(await Promise.resolve(params)).id} />
       <ReviewEditor bookId={params.id} />
+      <ReviewList bookId={params.id} />
     </div>
   );
 }
