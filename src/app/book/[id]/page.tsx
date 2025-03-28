@@ -3,6 +3,7 @@ import ReviewItem from "@/components/review-item";
 import { BookData, ReviewData } from "@/types";
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
+import Image from "next/image";
 
 export const dynamicParams = true; // 동적 라우팅을 사용할 경우 true로 설정
 
@@ -32,15 +33,15 @@ const BookDetail = async ({ bookId }: { bookId: string }) => {
   const { id, title, subTitle, description, author, publisher, coverImgUrl } =
     book;
 
-  console.log(id);
 
   return (
     <div className={style.container}>
+      <div className="sr-only">{id}</div>
       <div
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
       >
-        {/* <img src={coverImgUrl} /> */}
+        <Image src={coverImgUrl} width={240} height={300} alt={`도서 ${title}의 표지 이미지`}/>
       </div>
       <div className={style.title}>{title}</div>
       <div className={style.subTitle}>{subTitle}</div>
@@ -65,7 +66,6 @@ const ReviewList = async ({ bookId }: { bookId: string }) => {
 
   const reviews: ReviewData[] = await res.json();
 
-  console.log(reviews);
 
   return (
     <div className="space-y-4">
