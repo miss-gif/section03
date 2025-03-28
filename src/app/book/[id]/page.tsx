@@ -1,41 +1,41 @@
 import ReviewEditor from "@/components/review-editor";
 import ReviewItem from "@/components/review-item";
-import { BookData, ReviewData } from "@/types";
+import { ReviewData } from "@/types";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
 
-export const dynamicParams = true; // 동적 라우팅을 사용할 경우 true로 설정
-
-export const generateStaticParams = async () => {
+// export const dynamicParams = false;
+export function generateStaticParams() {
   return [{ id: "1" }, { id: "2" }, { id: "3" }];
-};
+}
 
-const BookDetail = async ({ bookId }: { bookId: string }) => {
-  const res = await fetch(
+async function BookDetail({ bookId }: { bookId: string }) {
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`,
-    {
-      next: {
-        tags: [`review-${bookId}`],
-      },
-    }
+    { cache: "force-cache" }
   );
 
-  if (!res.ok) {
-    if (res.status === 404) {
+  if (!response.ok) {
+    if (response.status === 404) {
       notFound();
     }
-    return <div>오류가 발생했습니다.</div>;
+    return <div>오류가 발생했습니다...</div>;
   }
 
-  const book: BookData = await res.json();
+  const book = await response.json();
 
-  const { id, title, subTitle, description, author, publisher, coverImgUrl } =
-    book;
+  const {
+    title,
+    subTitle,
+    description,
+    author,
+    publisher,
+    coverImgUrl,
+  } = book;
 
   return (
-    <div className={style.container}>
-      <div className="sr-only">{id}</div>
+    <section>
       <div
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
@@ -45,8 +45,6 @@ const BookDetail = async ({ bookId }: { bookId: string }) => {
           width={240}
           height={300}
           alt={`도서 ${title}의 표지 이미지`}
-          priority
-          style={{ width: "auto", height: "auto" }}
         />
       </div>
       <div className={style.title}>{title}</div>
@@ -55,68 +53,37 @@ const BookDetail = async ({ bookId }: { bookId: string }) => {
         {author} | {publisher}
       </div>
       <div className={style.description}>{description}</div>
-    </div>
+    </section>
   );
-};
-
-const ReviewList = async ({ bookId }: { bookId: string }) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`
-  );
-
-  if (!res.ok) {
-    throw new Error(
-      `리뷰 목록을 불러오는 중 오류가 발생했습니다. ${res.statusText}`
-    );
-  }
-
-  const reviews: ReviewData[] = await res.json();
-
-  return (
-    <div className="space-y-4">
-      {reviews.map((review) => (
-        <ReviewItem key={`review-itme-${review.id}`} {...review} />
-      ))}
-    </div>
-  );
-};
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${id}`,
-    { cache: "force-cache" }
-  );
-
-  if (!res.ok) {
-    if (res.status === 404) {
-      notFound();
-    }
-    throw new Error(`메타데이터를 불러오는 중 오류가 발생했습니다.`);
-  }
-  const book: BookData = await res.json();
-
-  return {
-    title: book.title,
-    description: book.description,
-    openGraph: {
-      title: book.title,
-      description: book.description,
-      images: [book.coverImgUrl],
-    },
-  };
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+async function ReviewList({ bookId }: { bookId: string }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`,
+    { next: { tags: [`review-${bookId}`] } }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Review fetch failed : ${response.statusText}`);
+  }
+
+  const reviews: ReviewData[] = await response.json();
+
   return (
-    <div className="space-y-10">
-      <BookDetail bookId={(await Promise.resolve(params)).id} />
-      <ReviewEditor bookId={(await Promise.resolve(params)).id} />
-      <ReviewList bookId={(await Promise.resolve(params)).id} />
+    <section>
+      {reviews.map((review) => (
+        <ReviewItem key={`review-item-${review.id}`} {...review} />
+      ))}
+    </section>
+  );
+}
+
+export default function Page({ params }: { params: { id: string } }) {
+  return (
+    <div className={style.container}>
+      <BookDetail bookId={params.id} />
+      <ReviewEditor bookId={params.id} />
+      <ReviewList bookId={params.id} />
     </div>
   );
 }
