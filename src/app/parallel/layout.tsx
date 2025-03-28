@@ -11,10 +11,10 @@ export default function Layout({
 }) {
   return (
     <>
-    <header className="flex gap-4 p-4 bg-gray-200">
-      <Link href={"/parallel"}>paralled</Link>
-      <Link href={"/parallel/setting"}>paralled/setting</Link>
-    </header>
+      <header className="flex gap-4 p-4 bg-gray-200">
+        <Link href={"/parallel"}>paralled</Link>
+        <Link href={"/parallel/setting"}>paralled/setting</Link>
+      </header>
       <section>
         {sidebar}
         {feed}

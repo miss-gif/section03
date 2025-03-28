@@ -18,7 +18,7 @@ const deleteReviewAction = async (_: unknown, formData: FormData) => {
       `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/${reviewId}`,
       {
         method: "DELETE",
-      }
+      },
     );
 
     if (!res.ok) {

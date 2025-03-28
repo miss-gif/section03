@@ -33,7 +33,7 @@ const Modal = ({ children }: { children: ReactNode }) => {
     >
       {children}
     </dialog>,
-    document.getElementById("modal-root") as HTMLElement // 모달을 렌더링할 DOM 노드
+    document.getElementById("modal-root") as HTMLElement, // 모달을 렌더링할 DOM 노드
   );
 };
 

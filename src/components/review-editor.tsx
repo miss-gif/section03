@@ -6,7 +6,7 @@ import { useActionState, useEffect } from "react";
 const ReviewEditor = ({ bookId }: { bookId: string }) => {
   const [state, formAction, isPending] = useActionState(
     createReviewAction,
-    null
+    null,
   );
 
   useEffect(() => {

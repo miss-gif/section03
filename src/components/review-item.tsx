@@ -2,7 +2,7 @@ import ReviewItemDeleteButton from "@/components/review-item-delete-button";
 import { ReviewData } from "@/types";
 import React from "react";
 
-const ReviewItem = ({id, bookId, content, author, createdAt }: ReviewData) => {
+const ReviewItem = ({ id, bookId, content, author, createdAt }: ReviewData) => {
   return (
     <div className="p-4 border rounded-lg shadow-sm bg-white">
       <div className="text-lg font-semibold text-gray-800">{author}</div>

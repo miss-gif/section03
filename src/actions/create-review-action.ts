@@ -25,7 +25,7 @@ const createReviewAction = async (_: unknown, formData: FormData) => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     if (!res.ok) {
       throw new Error(res.statusText);

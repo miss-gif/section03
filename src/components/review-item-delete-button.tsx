@@ -14,7 +14,7 @@ const ReviewItemDeleteButton = ({
 
   const [state, formAction, isPending] = useActionState(
     deleteReviewAction,
-    null
+    null,
   );
 
   useEffect(() => {

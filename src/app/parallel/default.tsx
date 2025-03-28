@@ -1,5 +1,3 @@
 export default function Default() {
-  return (
-    <div>/parallel/default</div>
-  );
+  return <div>/parallel/default</div>;
 }
