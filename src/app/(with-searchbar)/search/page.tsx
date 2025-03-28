@@ -2,7 +2,7 @@ import BookItem from "@/components/book-item";
 import BookListSkeleton from "@/components/skeleton/book-list-skeleton";
 import { BookData } from "@/types";
 import { delay } from "@/util/delay";
-import { Metadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
 
 const SearchResult = async ({ q }: { q: string }) => {
@@ -29,13 +29,15 @@ const SearchResult = async ({ q }: { q: string }) => {
   );
 };
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: { q?: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  { searchParams }: { searchParams: { q?: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   // 현재 페이지 메타 데이터를 동적으로 생석하는 역할을 합니다.
   const { q } = searchParams;
+  
+  // 부모 메타데이터의 이미지를 가져옵니다.
+  const previousImages = (await parent).openGraph?.images || [];
 
   return {
     title: `한입 북스 - ${q}`,
@@ -43,22 +45,26 @@ export async function generateMetadata({
     openGraph: {
       title: `한입 북스 - ${q}`,
       description: `한입 북스에 등록된 도서 중 "${q}" 검색 결과입니다.`,
-      images: ["/thumbnail.png"],
+      images: ["/thumbnail.png", ...previousImages],
     },
   };
 }
 
-export default function Page({
+// 수정된 페이지 컴포넌트 타입
+export default async function Page({
   searchParams,
 }: {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }) {
+  // searchParams를 await로 비동기 처리
+  const resolvedSearchParams = await searchParams;
+  
   return (
     <Suspense
-      key={searchParams.q || ""}
+      key={resolvedSearchParams.q || ""}
       fallback={<BookListSkeleton count={3} />}
     >
-      <SearchResult q={searchParams.q || ""} />
+      <SearchResult q={resolvedSearchParams.q || ""} />
     </Suspense>
   );
 }
