@@ -1,25 +1,26 @@
 import Link from "next/link";
+import { ReactNode } from "react";
 
 export default function Layout({
   children,
   sidebar,
   feed,
 }: {
-  children: React.ReactNode;
-  sidebar: React.ReactNode;
-  feed: React.ReactNode;
+  children: ReactNode;
+  sidebar: ReactNode;
+  feed: ReactNode;
 }) {
   return (
-    <>
-      <header className="flex gap-4 p-4 bg-gray-200">
-        <Link href={"/parallel"}>paralled</Link>
-        <Link href={"/parallel/setting"}>paralled/setting</Link>
-      </header>
-      <section>
-        {sidebar}
-        {feed}
-        {children}
-      </section>
-    </>
+    <div>
+      <div>
+        <Link href={"/parallel"}>parallel</Link>
+        &nbsp;
+        <Link href={"/parallel/setting"}>parallel/setting</Link>
+      </div>
+      <br />
+      {sidebar}
+      {feed}
+      {children}
+    </div>
   );
 }

@@ -2,31 +2,37 @@ import "./globals.css";
 import Link from "next/link";
 import style from "./layout.module.css";
 import { BookData } from "@/types";
+import { ReactNode } from "react";
 
-const Footer = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`, {
-    cache: "force-cache",
-  });
-
-  if (!res.ok) {
-    return <footer>© 2025 ONEBITE BOOKS</footer>;
+async function Footer() {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`,
+    { cache: "force-cache" },
+  );
+  if (!response.ok) {
+    return <footer>제작 @winterlood</footer>;
   }
 
-  const books: BookData[] = await res.json();
+  const books: BookData[] = await response.json();
   const bookCount = books.length;
 
-  return <footer>© 2025 ONEBITE BOOKS | {bookCount}권의 책</footer>;
-};
+  return (
+    <footer>
+      <div>제작 @winterlood</div>
+      <div>{bookCount}개의 도서가 등록되어 있습니다</div>
+    </footer>
+  );
+}
 
 export default function RootLayout({
   children,
   modal,
 }: Readonly<{
   children: React.ReactNode;
-  modal: React.ReactNode;
+  modal: ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="en">
       <body>
         <div className={style.container}>
           <header>

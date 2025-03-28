@@ -1,9 +1,10 @@
-import ReviewEditor from "@/components/review-editor";
-import ReviewItem from "@/components/review-item";
-import { ReviewData } from "@/types";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
+import { BookData, ReviewData } from "@/types";
+import ReviewItem from "@/components/review-item";
+import ReviewEditor from "@/components/review-editor";
+import Image from "next/image";
+import { Metadata } from "next";
 
 // export const dynamicParams = false;
 export function generateStaticParams() {
@@ -13,7 +14,7 @@ export function generateStaticParams() {
 async function BookDetail({ bookId }: { bookId: string }) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`,
-    { cache: "force-cache" },
+    { cache: "force-cache" }
   );
 
   if (!response.ok) {
@@ -53,7 +54,7 @@ async function BookDetail({ bookId }: { bookId: string }) {
 async function ReviewList({ bookId }: { bookId: string }) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`,
-    { next: { tags: [`review-${bookId}`] } },
+    { next: { tags: [`review-${bookId}`] } }
   );
 
   if (!response.ok) {
@@ -69,6 +70,32 @@ async function ReviewList({ bookId }: { bookId: string }) {
       ))}
     </section>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata | null> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${params.id}`,
+    { cache: "force-cache" }
+  );
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  const book: BookData = await response.json();
+
+  return {
+    title: `${book.title} - 한입북스`,
+    description: `${book.description}`,
+    openGraph: {
+      title: `${book.title} - 한입북스`,
+      description: `${book.description}`,
+      images: [book.coverImgUrl],
+    },
+  };
 }
 
 export default function Page({ params }: { params: { id: string } }) {

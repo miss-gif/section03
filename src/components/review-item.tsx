@@ -1,20 +1,24 @@
-import ReviewItemDeleteButton from "@/components/review-item-delete-button";
 import { ReviewData } from "@/types";
-import React from "react";
+import style from "./review-item.module.css";
+import ReviewItemDeleteButton from "./review-item-delete-button";
 
-const ReviewItem = ({ id, bookId, content, author, createdAt }: ReviewData) => {
+export default function ReviewItem({
+  id,
+  content,
+  author,
+  createdAt,
+  bookId,
+}: ReviewData) {
   return (
-    <div className="p-4 border rounded-lg shadow-sm bg-white">
-      <div className="text-lg font-semibold text-gray-800">{author}</div>
-      <div className="mt-2 text-gray-600">{content}</div>
-      <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
-        <div>{new Date(createdAt).toLocaleString()}</div>
-        <div className="text-red-500 hover:underline">
+    <div className={style.container}>
+      <div className={style.author}>{author}</div>
+      <div className={style.content}>{content}</div>
+      <div className={style.bottom_container}>
+        <div className={style.date}>{new Date(createdAt).toLocaleString()}</div>
+        <div className={style.delete_btn}>
           <ReviewItemDeleteButton reviewId={id} bookId={bookId} />
         </div>
       </div>
     </div>
   );
-};
-
-export default ReviewItem;
+}

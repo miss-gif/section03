@@ -19,13 +19,11 @@ export default function Searchbar() {
     setSearch(e.target.value);
   };
 
-  // 검색 버튼 클릭 시 검색 결과 페이지로 이동
   const onSubmit = () => {
     if (!search || q === search) return;
     router.push(`/search?q=${search}`);
   };
 
-  // 엔터 키 입력 시 검색 결과 페이지로 이동
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       onSubmit();

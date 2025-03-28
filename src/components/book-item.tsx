@@ -1,7 +1,7 @@
 import type { BookData } from "@/types";
+import Image from "next/image";
 import Link from "next/link";
 import style from "./book-item.module.css";
-import Image from "next/image";
 
 export default function BookItem({
   id,
@@ -18,8 +18,6 @@ export default function BookItem({
         width={80}
         height={105}
         alt={`도서 ${title}의 표지 이미지`}
-        priority
-        style={{ width: "auto", height: "auto" }}
       />
       <div>
         <div className={style.title}>{title}</div>
