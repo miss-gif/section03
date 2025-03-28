@@ -4,6 +4,7 @@ import { BookData } from "@/types";
 import { delay } from "@/util/delay";
 import { Suspense } from "react";
 import style from "./page.module.css";
+import { Metadata } from "next";
 
 const AllBooks = async () => {
   await delay(1500);
@@ -49,6 +50,16 @@ const RecoBooks = async () => {
 };
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "한입 북스",
+  description: "한입 북스에 등록된 도서를 만나보세요.",
+  openGraph: {
+    title: "한입 북스",
+    description: "한입 북스에 등록된 도서를 만나보세요.",
+    images: ["/thumbnail.png"],
+  },
+};
 
 export default function Home() {
   return (

@@ -1,9 +1,9 @@
 import ReviewEditor from "@/components/review-editor";
 import ReviewItem from "@/components/review-item";
 import { BookData, ReviewData } from "@/types";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
-import Image from "next/image";
 
 export const dynamicParams = true; // 동적 라우팅을 사용할 경우 true로 설정
 
@@ -45,7 +45,7 @@ const BookDetail = async ({ bookId }: { bookId: string }) => {
           width={240}
           height={300}
           alt={`도서 ${title}의 표지 이미지`}
-          priority 
+          priority
           style={{ width: "auto", height: "auto" }}
         />
       </div>
@@ -80,6 +80,36 @@ const ReviewList = async ({ bookId }: { bookId: string }) => {
     </div>
   );
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${id}`,
+    { cache: "force-cache" }
+  );
+
+  if (!res.ok) {
+    if (res.status === 404) {
+      notFound();
+    }
+    throw new Error(`메타데이터를 불러오는 중 오류가 발생했습니다.`);
+  }
+  const book: BookData = await res.json();
+
+  return {
+    title: book.title,
+    description: book.description,
+    openGraph: {
+      title: book.title,
+      description: book.description,
+      images: [book.coverImgUrl],
+    },
+  };
+}
 
 export default async function Page({ params }: { params: { id: string } }) {
   return (
