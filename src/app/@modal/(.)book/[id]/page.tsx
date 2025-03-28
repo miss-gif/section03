@@ -4,7 +4,6 @@ import Modal from "@/components/modal";
 export default function Page(props: { params: { id: string } }) {
   return (
     <>
-      <div>가로채기 성공!</div>
       <Modal>
         <BookPage {...props} />
       </Modal>
