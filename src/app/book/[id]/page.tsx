@@ -33,7 +33,6 @@ const BookDetail = async ({ bookId }: { bookId: string }) => {
   const { id, title, subTitle, description, author, publisher, coverImgUrl } =
     book;
 
-
   return (
     <div className={style.container}>
       <div className="sr-only">{id}</div>
@@ -41,7 +40,14 @@ const BookDetail = async ({ bookId }: { bookId: string }) => {
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
       >
-        <Image src={coverImgUrl} width={240} height={300} alt={`도서 ${title}의 표지 이미지`}/>
+        <Image
+          src={coverImgUrl}
+          width={240}
+          height={300}
+          alt={`도서 ${title}의 표지 이미지`}
+          priority 
+          style={{ width: "auto", height: "auto" }}
+        />
       </div>
       <div className={style.title}>{title}</div>
       <div className={style.subTitle}>{subTitle}</div>
@@ -66,7 +72,6 @@ const ReviewList = async ({ bookId }: { bookId: string }) => {
 
   const reviews: ReviewData[] = await res.json();
 
-
   return (
     <div className="space-y-4">
       {reviews.map((review) => (
@@ -80,8 +85,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <div className="space-y-10">
       <BookDetail bookId={(await Promise.resolve(params)).id} />
-      <ReviewEditor bookId={params.id} />
-      <ReviewList bookId={params.id} />
+      <ReviewEditor bookId={(await Promise.resolve(params)).id} />
+      <ReviewList bookId={(await Promise.resolve(params)).id} />
     </div>
   );
 }
